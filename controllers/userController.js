@@ -14,7 +14,7 @@ exports.register = function(req, res) {
   if (user.errors.length) {
     res.send(user.errors)
   } else {
-    res.send("no errors.")
+    res.send("Congrats, there are no errors.")
   }
 }
 
