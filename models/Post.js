@@ -78,7 +78,7 @@ Post.findSingleById = function(id) {
       reject()
       return
     }
-
+    
     let posts = await Post.reusablePostQuery([
       {$match: {_id: new ObjectID(id)}}
     ])
