@@ -33,13 +33,13 @@ User.prototype.validate = function() {
     if (this.data.password.length > 50) {this.errors.push("Password cannot exceed 50 characters.")}
     if (this.data.username.length > 0 && this.data.username.length < 3) {this.errors.push("Username must be at least 3 characters.")}
     if (this.data.username.length > 30) {this.errors.push("Username cannot exceed 30 characters.")}
-  
+
     // Only if username is valid then check to see if it's already taken
     if (this.data.username.length > 2 && this.data.username.length < 31 && validator.isAlphanumeric(this.data.username)) {
       let usernameExists = await usersCollection.findOne({username: this.data.username})
       if (usernameExists) {this.errors.push("That username is already taken.")}
     }
-  
+
     // Only if email is valid then check to see if it's already taken
     if (validator.isEmail(this.data.email)) {
       let emailExists = await usersCollection.findOne({email: this.data.email})
@@ -71,8 +71,8 @@ User.prototype.register = function() {
     // Step #1: Validate user data
     this.cleanUp()
     await this.validate()
-  
-    // Step #2: Only if there are no validation errors 
+
+    // Step #2: Only if there are no validation errors
     // then save the user data into a database
     if (!this.errors.length) {
       // hash user password
