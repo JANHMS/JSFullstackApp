@@ -16,7 +16,11 @@ app.use(sessionOptions)
 app.use(flash())
 
 app.use(function(req, res, next){
-  res.locals.user = req.session.user
+  //make current user id available on the request ObjectID
+  if(req.session.user) {req.visitorId = req.session.user._id} else {req.visitorId = 0}
+
+  // make user session data available from within view templates
+  res.locals.user = req.session.user//we can acsress this from templates
   next()//have acces to user properties from any our ejs templates
 })
 
