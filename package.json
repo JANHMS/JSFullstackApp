@@ -4,15 +4,15 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "watch": "nodemon db",
+    "watch": "nodemon db --ignore frontend-js --ignore public/ & webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
     "@sendgrid/mail": "^6.4.0",
     "axios": "^0.19.0",
     "babel-loader": "^8.0.6",
@@ -34,7 +34,7 @@
     "sanitize-html": "^1.20.1",
     "socket.io": "^2.2.0",
     "validator": "^11.1.0",
-    "webpack": "^4.39.2",
-    "webpack-cli": "^3.3.7"
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9"
   }
 }
