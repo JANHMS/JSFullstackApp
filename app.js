@@ -1,10 +1,11 @@
 const express = require('express')
 const session = require('express-session')
-const flash = require('connect-flash')
 const MongoStore = require('connect-mongo')(session)
-const app = express()
+const flash = require('connect-flash')
 const markdown = require('marked')
+const app = express()
 const sanitizeHTML = require('sanitize-html')
+
 let sessionOptions = session({
   secret: "JavaScript is sooooooooo coool",
   store: new MongoStore({client: require('./db')}),
@@ -16,24 +17,22 @@ let sessionOptions = session({
 app.use(sessionOptions)
 app.use(flash())
 
-app.use(function(req, res, next){
-  //make markdown avaiable from ejs templates
-  res.locals.filterUserHTML = function(content){
-    return sanitizeHTML(markdown(content), {allowedTags:['p','br', 'li', 'i', 'bold', 'h1', 'strong', 'em'], allowedAtributes:{}})
-
-
+app.use(function(req, res, next) {
+  // make our markdown function available from within ejs templates
+  res.locals.filterUserHTML = function(content) {
+    return sanitizeHTML(markdown(content), {allowedTags: ['p', 'br', 'ul', 'ol', 'li', 'strong', 'bold', 'i', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'], allowedAttributes: {}})
   }
 
-  //make all eerror and scsses form all templates
-  res.locals.errors = req.flash('errors')
-  res.locals.success = req.flash('success')
+  // make all error and success flash messages available from all templates
+  res.locals.errors = req.flash("errors")
+  res.locals.success = req.flash("success")
 
-  //make current user id available on the request ObjectID
-  if(req.session.user) {req.visitorId = req.session.user._id} else {req.visitorId = 0}
+  // make current user id available on the req object
+  if (req.session.user) {req.visitorId = req.session.user._id} else {req.visitorId = 0}
 
   // make user session data available from within view templates
-  res.locals.user = req.session.user//we can acsress this from templates
-  next()//have acces to user properties from any our ejs templates
+  res.locals.user = req.session.user
+  next()
 })
 
 const router = require('./router')

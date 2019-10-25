@@ -16,8 +16,8 @@ Post.prototype.cleanUp = function() {
 
   // get rid of any bogus properties
   this.data = {
-    title: sanitizeHTML(this.data.title.trim(),{allowedTags: [], allowedAtributes: {}}),
-    body: sanitizeHTML(this.data.body.trim(),{allowedTags: [], allowedAtributes: {}}),
+    title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
+    body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
     createdDate: new Date(),
     author: ObjectID(this.userid)
   }
@@ -94,6 +94,7 @@ Post.reusablePostQuery = function(uniqueOperations, visitorId) {
     // clean up author property in each post object
     posts = posts.map(function(post) {
       post.isVisitorOwner = post.authorId.equals(visitorId)
+      post.authorId = undefined
 
       post.author = {
         username: post.author.username,
@@ -134,17 +135,31 @@ Post.findByAuthorId = function(authorId) {
   ])
 }
 
-Post.delete =function(postIdToDelete, currentUserId) {
+Post.delete = function(postIdToDelete, currentUserId) {
   return new Promise(async (resolve, reject) => {
-    try{
+    try {
       let post = await Post.findSingleById(postIdToDelete, currentUserId)
-      if(post.isVisitorOwner){
-         await postsCollection.deleteOne({_id: new ObjectID(postIdToDelete)})
-         resolve()
-      }else{
+      if (post.isVisitorOwner) {
+        await postsCollection.deleteOne({_id: new ObjectID(postIdToDelete)})
+        resolve()
+      } else {
         reject()
       }
     } catch {
+      reject()
+    }
+  })
+}
+
+Post.search = function(searchTerm) {
+  return new Promise(async (resolve, reject) => {
+    if (typeof(searchTerm) == "string") {
+      let posts = await Post.reusablePostQuery([
+        {$match: {$text: {$search: searchTerm}}},
+        {$sort: {score: {$meta: "textScore"}}}
+      ])
+      resolve(posts)
+    } else {
       reject()
     }
   })
