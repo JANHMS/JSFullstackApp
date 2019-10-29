@@ -95,6 +95,7 @@ Post.reusablePostQuery = function(uniqueOperations, visitorId) {
     // clean up author property in each post object
     posts = posts.map(function(post) {
       post.isVisitorOwner = post.authorId.equals(visitorId)
+      console.log(post.isVisitorOwner)
       post.authorId = undefined
 
       post.author = {
@@ -121,7 +122,6 @@ Post.findSingleById = function(id, visitorId) {
     ], visitorId)
 
     if (posts.length) {
-      console.log(posts[0])
       resolve(posts[0])
     } else {
       reject()
