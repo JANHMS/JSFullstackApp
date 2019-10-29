@@ -115,7 +115,7 @@ Post.findSingleById = function(id, visitorId) {
       reject()
       return
     }
-
+    
     let posts = await Post.reusablePostQuery([
       {$match: {_id: new ObjectID(id)}}
     ], visitorId)
@@ -145,7 +145,7 @@ Post.delete = function(postIdToDelete, currentUserId) {
         resolve()
       } else {
         reject()
-      }
+      }    
     } catch {
       reject()
     }
@@ -160,7 +160,7 @@ Post.search = function(searchTerm) {
         {$sort: {score: {$meta: "textScore"}}}
       ])
       resolve(posts)
-    } else {
+    } else { 
       reject()
     }
   })

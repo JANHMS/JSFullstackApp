@@ -2,6 +2,7 @@ const usersCollection = require('../db').db().collection("users")
 const followsCollection = require('../db').db().collection("follows")
 const ObjectID = require('mongodb').ObjectID
 const User = require('./User')
+
 let Follow = function(followedUsername, authorId) {
   this.followedUsername = followedUsername
   this.authorId = authorId
@@ -68,6 +69,7 @@ Follow.isVisitorFollowing = async function(followedId, visitorId) {
     return false
   }
 }
+
 Follow.getFollowersById = function(id) {
   return new Promise(async (resolve, reject) => {
     try {
@@ -89,6 +91,7 @@ Follow.getFollowersById = function(id) {
     }
   })
 }
+
 Follow.getFollowingById = function(id) {
   return new Promise(async (resolve, reject) => {
     try {
@@ -110,16 +113,19 @@ Follow.getFollowingById = function(id) {
     }
   })
 }
-Follow.countFollowersById = function(id){
+
+Follow.countFollowersById = function(id) {
   return new Promise(async (resolve, reject) => {
     let followerCount = await followsCollection.countDocuments({followedId: id})
     resolve(followerCount)
   })
 }
-Follow.countFollowingById = function(id){
+
+Follow.countFollowingById = function(id) {
   return new Promise(async (resolve, reject) => {
-    let followingCount = await followsCollection.countDocuments({authorId: id})
-    resolve(followingCount)
+    let count = await followsCollection.countDocuments({authorId: id})
+    resolve(count)
   })
 }
+
 module.exports = Follow

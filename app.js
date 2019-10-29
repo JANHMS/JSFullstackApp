@@ -22,14 +22,14 @@ app.use(function(req, res, next) {
   res.locals.filterUserHTML = function(content) {
     return sanitizeHTML(markdown(content), {allowedTags: ['p', 'br', 'ul', 'ol', 'li', 'strong', 'bold', 'i', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'], allowedAttributes: {}})
   }
-
+  
   // make all error and success flash messages available from all templates
   res.locals.errors = req.flash("errors")
   res.locals.success = req.flash("success")
 
   // make current user id available on the req object
   if (req.session.user) {req.visitorId = req.session.user._id} else {req.visitorId = 0}
-
+  
   // make user session data available from within view templates
   res.locals.user = req.session.user
   next()
@@ -46,4 +46,14 @@ app.set('view engine', 'ejs')
 
 app.use('/', router)
 
-module.exports = app
+const server = require('http').createServer(app)
+
+const io = require('socket.io')(server)
+
+io.on('connection', function(socket) {
+  socket.on('chatMessageFromBrowser', function(data) {
+    io.emit('chatMessageFromServer', {message: data.message})
+  })
+})
+
+module.exports = server
