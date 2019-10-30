@@ -95,7 +95,6 @@ Post.reusablePostQuery = function(uniqueOperations, visitorId) {
     // clean up author property in each post object
     posts = posts.map(function(post) {
       post.isVisitorOwner = post.authorId.equals(visitorId)
-      console.log(post.isVisitorOwner)
       post.authorId = undefined
 
       post.author = {
